@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: api
+          imagePullPolicy: Never
+          args:
+            - "-port=3000"
+            - "-pg-host=postgres.walker.svc.cluster.local"
+            - "-pg-port=5432"
+            - "-pg-user=$(PG_USER)"
+            - "-pg-pass=$(PG_PASS)"
+            - "-pg-db=walker"
+          env:
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: username
+            - name: PG_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password

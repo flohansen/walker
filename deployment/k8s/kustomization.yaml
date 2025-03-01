@@ -1,0 +1,5 @@
+namespace: walker
+resources:
+  - namespace.yaml
+  - api/
+  - postgres/
