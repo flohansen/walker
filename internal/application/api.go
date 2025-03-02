@@ -34,6 +34,11 @@ type DatabaseFlags struct {
 	Database string
 }
 
+func (f DatabaseFlags) Dsn() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+		f.Username, f.Password, f.Host, f.Port, f.Database)
+}
+
 type Flags struct {
 	Server   ServerFlags
 	Database DatabaseFlags
@@ -44,15 +49,7 @@ type API struct {
 }
 
 func NewAPI(flags Flags) *API {
-	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		flags.Database.Username,
-		flags.Database.Password,
-		flags.Database.Host,
-		flags.Database.Port,
-		flags.Database.Database,
-	)
-
+	dsn := flags.Database.Dsn()
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		log.Fatalf("could not open postgres database: %s", err)
