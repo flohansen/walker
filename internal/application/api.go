@@ -55,21 +55,21 @@ func NewAPI(flags Flags) *API {
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("could not open postgres database: %w", err)
+		log.Fatalf("could not open postgres database: %s", err)
 	}
 
 	d, err := iofs.New(localsql.MigrationsFS, "migrations")
 	if err != nil {
-		log.Fatalf("could not create migration source: %w", err)
+		log.Fatalf("could not create migration source: %s", err)
 	}
 
 	m, err := migrate.NewWithSourceInstance("iofs", d, dsn)
 	if err != nil {
-		log.Fatalf("could not create migration instance: %w", err)
+		log.Fatalf("could not create migration instance: %s", err)
 	}
 
 	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		log.Fatalf("could not migrate: %w", err)
+		log.Fatalf("could not migrate: %s", err)
 	}
 
 	repo := &repository.RouteSQLRepository{

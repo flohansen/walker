@@ -9,6 +9,11 @@ generate:
 
 .PHONY: setup
 setup: generate
+	cp .githooks/pre-push .git/hooks/pre-push
+
+.PHONY: test
+test: generate
+	go test ./... -cover -race
 
 .PHONY: docker-build
 docker-build:
